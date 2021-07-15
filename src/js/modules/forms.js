@@ -1,11 +1,16 @@
-//import checkNumInputs from './checkNumInputs';
+import {
+	postData
+} from '../services/requests';
 
-const forms = () => {
+
+
+
+const forms = (state) => {
 	const form = document.querySelectorAll('form'),
 		inputs = document.querySelectorAll('input'),
 		upload = document.querySelectorAll('[name="upload"]');
 
-	//checkNumInputs('input[name="user_phone"]');
+
 
 	const message = {
 		loading: 'Загрузка...',
@@ -21,14 +26,6 @@ const forms = () => {
 		question: 'assets/question.php'
 	};
 
-	const postData = async (url, data) => {
-		let res = await fetch(url, {
-			method: "POST",
-			body: data
-		});
-
-		return await res.text();
-	};
 
 	const clearInputs = () => {
 		inputs.forEach(item => {
@@ -39,6 +36,7 @@ const forms = () => {
 
 		});
 	};
+
 
 	upload.forEach(item => {
 		item.addEventListener('input', () => {
@@ -75,10 +73,19 @@ const forms = () => {
 			statusMessage.append(textMessage);
 
 			const formData = new FormData(item);
-			let api;
-			item.closest('.popup-design') || item.classList.contains('calc_form') ? api = path.designer : api = path.question;
-			console.log(api);
 
+
+			/*if (item.getAttribute('[data-calc="end"]')) {
+				for (let key in state) {
+					formData.append(key, state[key]);
+				}
+			}*/
+
+			let api;
+
+			item.closest('.popup-design') || item.classList.contains('calc_form') ? api = path.designer : api = path.question;
+
+			console.log(api);
 
 			postData(api, formData)
 				.then(res => {
@@ -92,6 +99,7 @@ const forms = () => {
 				})
 				.finally(() => {
 					clearInputs();
+					//clearCalc();
 					setTimeout(() => {
 						statusMessage.remove();
 						item.style.display = 'block';
